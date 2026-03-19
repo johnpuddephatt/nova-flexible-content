@@ -7,7 +7,7 @@
                   <button
                             dusk="drag-group"
                             type="button"
-                            class="group-control btn border-l border-gray-200 dark:border-gray-700 w-8 h-8 block nova-flexible-content-drag-button"
+                            class="group-control btn border-l border-gray-200 dark:border-gray-700 w-8 h-8 flex justify-center items-center nova-flexible-content-drag-button"
                             :title="__('Drag')"
                             >
                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="h-4 w-4 mx-2">
@@ -27,10 +27,10 @@
                         <button
                             dusk="delete-group"
                             type="button"
-                            class="group-control btn border-l border-gray-200 dark:border-gray-700 w-8 h-8 block"
+                            class="group-control btn border-l border-gray-200 dark:border-gray-700 w-8 h-8 flex justify-center items-center"
                             :title="__('Delete')"
                             @click.prevent="confirmRemove">
-                            <icon type="trash" width="16" height="16" />
+                            <Icon name="trash" type="micro" />
                         </button>
                         <delete-flexible-content-group-modal
                             v-if="removeMessage"
@@ -91,18 +91,18 @@
 </template>
 
 <script>
-import BehavesAsPanel from 'nova-mixins/BehavesAsPanel';
+import { Icon } from 'laravel-nova-ui';
 import { mapProps } from 'laravel-nova';
 
 export default {
-    mixins: [BehavesAsPanel],
+    components: { Icon },
 
     props: {
         errors: {},
         group: {},
         index: {},
         field: {},
-        ...mapProps(['mode'])
+        ...mapProps(['resourceName', 'resourceId', 'mode'])
     },
 
     emits: ['move-up', 'move-down', 'remove'],

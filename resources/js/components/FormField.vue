@@ -75,7 +75,7 @@ export default {
     mixins: [HandlesValidationErrors, DependentFormField],
 
     props: {
-        ...mapProps(['mode']),
+        ...mapProps(['resourceName', 'resourceId', 'mode']),
     },
 
     components: { FullWidthField },

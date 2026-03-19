@@ -16,7 +16,7 @@
                 </li>
             </ul>
         </div>
-        <default-button
+        <Button
             dusk="toggle-layouts-dropdown-or-add-default"
             type="button"
             tabindex="0"
@@ -25,13 +25,16 @@
             v-if="isBelowLayoutLimits"
         >
             <span>{{ field.button }}</span>
-        </default-button>
+        </Button>
     </div>
 </template>
 
 <script>
+    import { Button } from 'laravel-nova-ui';
 
     export default {
+        components: { Button },
+
         props: ['layouts', 'field', 'resourceName', 'resourceId', 'resource', 'errors', 'limitCounter', 'limitPerLayoutCounter'],
 
         emits: ['addGroup'],

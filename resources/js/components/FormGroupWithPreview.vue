@@ -12,7 +12,7 @@
                         class="group-control btn border-l border-gray-200 dark:border-gray-700 w-8 h-8 block nova-flexible-content-drag-button"
                         :title="__('Drag')"
                         >
-                        <icon type="selector" class="align-top" width="16" height="16" />
+                        <Icon name="arrows-up-down" type="micro" />
                     </button>
                     <button
                         dusk="move-up-group"
@@ -20,7 +20,7 @@
                         class="group-control btn border-l border-gray-200 dark:border-gray-700 w-8 h-8 block"
                         :title="__('Move up')"
                         @click.prevent="moveUp">
-                        <icon type="arrow-up" class="align-top" width="16" height="16" />
+                        <Icon name="arrow-up" type="micro" />
                     </button>
                     <button
                         dusk="move-down-group"
@@ -28,7 +28,7 @@
                         class="group-control btn border-l border-gray-200 dark:border-gray-700 w-8 h-8 block"
                         :title="__('Move down')"
                         @click.prevent="moveDown">
-                        <icon type="arrow-down" class="align-top" width="16" height="16" />
+                        <Icon name="arrow-down" type="micro" />
                     </button>
                     <button
                         dusk="delete-group"
@@ -36,7 +36,7 @@
                         class="group-control btn border-l border-gray-200 dark:border-gray-700 w-8 h-8 block"
                         :title="__('Delete')"
                         @click.prevent="confirmRemove">
-                        <icon type="trash" width="16" height="16" />
+                        <Icon name="trash" type="micro" />
                     </button>
                     <delete-flexible-content-group-modal
                         v-if="removeMessage"
@@ -61,7 +61,7 @@
                 <div class="w-full py-5">
                     <div class="px-6 py-6 gap-2 flex flex-row items-center ">
                         <button :aria-label="`Close ${ group.title }`" @click.prevent="$emit('group-selected')">    
-                            <icon type="arrow-left" class="align-top rounded-full hover:bg-gray-200 p-2" width="36" height="36" />
+                            <Icon name="arrow-left" type="outline" class="align-top rounded-full hover:bg-gray-200 p-2 w-9 h-9" />
                         </button>
                         <h3 class="font-semibold">{{  group.title }}</h3>
                     </div>
@@ -100,13 +100,12 @@
 </template>
 
 <script>
-import BehavesAsPanel from 'nova-mixins/BehavesAsPanel';
+import { Icon } from 'laravel-nova-ui';
+import { mapProps } from 'laravel-nova';
 import FieldListWithPreview from "./FieldListWithPreview";
 
 export default {
-    mixins: [BehavesAsPanel],
-
-    components: {  FieldListWithPreview },
+    components: { FieldListWithPreview, Icon },
 
     props: {
         errors: {},
@@ -115,6 +114,7 @@ export default {
         field: {},
         selectedGroup: false,
         fullScreen: false,
+        ...mapProps(['resourceName', 'resourceId', 'mode']),
     },
 
     emits: ['move-up', 'move-down', 'remove'],

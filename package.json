@@ -23,5 +23,8 @@
     },
     "dependencies": {
         "prettier": "^3.4.2"
+    },
+    "overrides": {
+        "webpack": "5.98.0"
     }
 }

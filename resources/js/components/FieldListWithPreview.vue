@@ -12,12 +12,7 @@
                 v-if="fieldListErrorCount"
                 class="font-bold z-20 mt-3 ml-3 border shadow absolute bg-white px-4 py-2 rounded"
             >
-                <icon
-                    type="exclamation-circle"
-                    class="text-red-600 align-middle"
-                    width="20"
-                    height="20"
-                />
+                <Icon name="exclamation-circle" type="mini" class="text-red-600 align-middle" />
                 {{ fieldListErrorCount }} errors
             </div>
             <div
@@ -47,12 +42,7 @@
                         :aria-label="`Close ${title}`"
                         @click.prevent="$emit('group-selected')"
                     >
-                        <icon
-                            type="arrow-left"
-                            class="align-top rounded-full hover:bg-gray-200 p-2"
-                            width="36"
-                            height="36"
-                        />
+                        <Icon name="arrow-left" type="outline" class="align-top rounded-full hover:bg-gray-200 p-2 w-9 h-9" />
                     </button>
                     <h3 class="font-semibold">{{ title }}</h3>
                 </div>
@@ -88,9 +78,9 @@
 </template>
 
 <script>
-import { tsImportEqualsDeclaration } from "@babel/types";
-import _, { map } from "underscore";
+import _ from "lodash";
 import PreviewIframe from "./PreviewIframe";
+import { Icon } from 'laravel-nova-ui';
 
 export default {
     props: {
@@ -108,7 +98,7 @@ export default {
         title: null,
     },
 
-    components: { PreviewIframe },
+    components: { PreviewIframe, Icon },
 
     data() {
         return {

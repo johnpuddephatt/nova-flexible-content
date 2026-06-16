@@ -67,6 +67,25 @@ class Layout implements LayoutInterface, JsonSerializable, ArrayAccess, Arrayabl
     protected $preview;
 
     /**
+     * Whether this layout can be cloned in the UI.
+     * Set to true on a custom layout class to enable the clone button.
+     *
+     * @var bool
+     */
+    protected $cloneable = false;
+
+    /**
+     * Per-field value overrides applied when a layout is cloned.
+     * Map of field attribute => override spec. A scalar sets the value
+     * directly; an array directive supports one of:
+     *   ['set' => $value], ['append' => $string], ['prepend' => $string].
+     * e.g. ['title' => ['append' => ' (copy)'], 'is_chatroom' => false]
+     *
+     * @var array
+     */
+    protected $cloneOverrides = [];
+
+    /**
      * The layout's preview attribute
      *
      * @var string
@@ -712,6 +731,8 @@ class Layout implements LayoutInterface, JsonSerializable, ArrayAccess, Arrayabl
             'collapsedPreviewAttribute' => $this->collapsedPreviewAttribute(),
             'limit' => $this->limit,
             'preview' => $this->preview,
+            'cloneable' => $this->cloneable,
+            'cloneOverrides' => $this->cloneOverrides,
         ];
     }
 

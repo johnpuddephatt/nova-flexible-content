@@ -1,12 +1,13 @@
 export default class Group {
 
-    constructor(name, title, fields, field, key, preview, collapsed = true) {
+    constructor(name, title, fields, field, key, preview, collapsed = true, cloneable = false) {
         this.name = name;
         this.title = title;
         this.fields = fields;
         this.key = key || this.getTemporaryUniqueKey(field.attribute);
         this.preview = preview;
         this.collapsed = collapsed;
+        this.cloneable = cloneable;
         this.readonly = field.readonly;
 
         this.renameFields();

@@ -41,6 +41,7 @@
                         
                         @move-up="moveUp(group.key)"
                         @move-down="moveDown(group.key)"
+                        @clone="cloneGroup(group.key)"
                         @remove="remove(group.key)"
                         @group-selected="selectGroup(group.key, $event)"
                     />            
@@ -282,7 +283,7 @@ export default {
             collapsed = collapsed || false;
 
             let fields = attributes || JSON.parse(JSON.stringify(layout.fields)),
-                group = new Group(layout.name, layout.title, fields, this.currentField, key, layout.preview, collapsed);
+                group = new Group(layout.name, layout.title, fields, this.currentField, key, layout.preview, collapsed, layout.cloneable);
 
             this.groups[group.key] = group;
             this.order.push(group.key);
@@ -315,6 +316,86 @@ export default {
             if(index < 0 || index >= this.order.length - 1) return;
 
             this.order.splice(index + 1, 0, this.order.splice(index, 1)[0]);
+        },
+
+        /**
+         * Deep-clone a group (with its current values) and insert it after the original
+         */
+        cloneGroup(key) {
+            let source = this.groups[key];
+            if (!source || !source.cloneable) return;
+
+            let layout = this.getLayout(source.name);
+            if (!layout) return;
+
+            // Capture the source group's CURRENT values (same path used on save)
+            let current = source.serialize().attributes; // { 'sourceKey__attr': value }
+
+            // Per-field overrides defined on the layout (e.g. append ' (copy)')
+            let overrides = layout.cloneOverrides || {};
+
+            // Rebuild from the pristine layout definition (bare attribute names)...
+            let fields = JSON.parse(JSON.stringify(layout.fields));
+
+            // ...and inject the captured values onto the matching fields
+            fields.forEach(f => {
+                let sourceAttribute = source.key + '__' + f.attribute;
+                if (Object.prototype.hasOwnProperty.call(current, sourceAttribute)) {
+                    f.value = this.decodeClonedValue(current[sourceAttribute]);
+                }
+
+                // Apply any configured clone override for this field
+                if (Object.prototype.hasOwnProperty.call(overrides, f.attribute)) {
+                    f.value = this.applyCloneOverride(f.value, overrides[f.attribute]);
+                }
+            });
+
+            // New Group generates its own unique key and re-namespaces the fields
+            let clone = new Group(source.name, source.title, fields, this.currentField, null, layout.preview, false, layout.cloneable);
+
+            this.groups[clone.key] = clone;
+            let index = this.order.indexOf(key);
+            this.order.splice(index + 1, 0, clone.key); // insert immediately after original
+        },
+
+        /**
+         * Decode a value captured from serialize() back into the shape a field's
+         * component expects. Fields whose fill() JSON-encodes structured data
+         * (e.g. EditorJs, multiselect/array, key-value) store a stringified
+         * object/array; on a normal page load PHP decodes this, but a client-side
+         * clone must do it here. Scalars and plain text are returned untouched.
+         */
+        decodeClonedValue(value) {
+            if (typeof value !== 'string') return value;
+
+            try {
+                let parsed = JSON.parse(value);
+
+                if (parsed !== null && typeof parsed === 'object') {
+                    return parsed;
+                }
+            } catch (e) {
+                // not JSON — keep the original string
+            }
+
+            return value;
+        },
+
+        /**
+         * Apply a layout-defined clone override to a field's value.
+         * A scalar spec sets the value directly; an array directive supports
+         * { set }, { append } or { prepend }.
+         */
+        applyCloneOverride(value, spec) {
+            if (spec === null || typeof spec !== 'object') {
+                return spec; // scalar → force value
+            }
+
+            if ('set' in spec) return spec.set;
+            if ('append' in spec) return (value == null ? '' : value) + spec.append;
+            if ('prepend' in spec) return spec.prepend + (value == null ? '' : value);
+
+            return value;
         },
 
         /**

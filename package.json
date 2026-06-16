@@ -26,7 +26,8 @@
         "sass-loader": "10.*",
         "sortablejs": "^1.15.0",
         "vue-loader": "^16.8.3",
-        "vuex": "^4.0.2"
+        "vuex": "^4.0.2",
+        "webpack": "^5.76.1"
     },
     "dependencies": {
         "laravel-nova-ui": "^0.4.12",
